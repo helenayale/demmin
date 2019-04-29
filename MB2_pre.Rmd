@@ -48,8 +48,8 @@ plot(ww2, col="red", add=TRUE)
 ```
 
 ## Data Source
-Landsat 8 OLI/TIRS C1 Level-2 Products => NDVI/LAI
-ERA Interim => daily temperature
+Landsat 8 OLI/TIRS C1 Level-2 Products (USGS) => NDVI/LAI
+ERA Interim (ECMWF) => daily temperature
 
 
 ## NDVI & LAI
