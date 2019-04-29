@@ -115,7 +115,7 @@ renderPlot({
 ```{r ndvi_sample}
 inputPanel(
   selectInput("index2", label = "Index:",
-              choices = c("NDVI", "LAI","Temp_mean"), selected = "NDVI"),
+              choices = c("NDVI", "LAI"), selected = "NDVI"),
   
   selectInput("year2", label = "Year:",
               choices = c(2017,2018), selected = 2017)
