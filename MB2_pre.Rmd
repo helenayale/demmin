@@ -1,0 +1,163 @@
+---
+title: "How did Heat Wave in 2018 Influence Agricultural Vegetation in Demmin?"
+author: "Haiyin Ye"
+date: "29 April 2019"
+output: ioslides_presentation
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)# set working directory
+```
+
+## Introduction
+In 2018, Germany experienced the warmest spring and summer seasons since 1881, according to the report of "drought & heat wave summer 2018 (Germany)" (Mühr et al. 2018). As one of the major envionmental disasters, drought is always a big topic in agriculture. This study is focused on temperature as an environmental indicator and the change in the growth of agricultural vegetation during heat wave. 
+
+## 3 sub-questions
+
+- Did the variation pattern of NDVI and LAI change? And how?
+- Did the variation pattern of temperature change? And how?
+- How are these two changes related?
+
+## Study Area
+
+agricultural fields in Alt Tellin, Demmin, Germany 
+
+```{r studyarea}
+renderPlot({
+setwd("D:/R/demmin")
+library(raster)
+library(rgdal) 
+## reloading function
+reloading <- function(stack){
+  in_stack <- brick(stack)
+  band_names <- c("pixel_qa", "radsat_qa", "aerosol_qa", "Aerosol", "Blue", "Green", "Red", "NIR", "SWIR.1", "SWIR.2")
+  names(in_stack) <- band_names
+  return(in_stack)
+}
+stack20180520 <- reloading("stack20180520.tif")
+ww <- readOGR("WW3.shp")
+ww2 <- spTransform(ww,CRS(proj4string(stack20180520)))
+ww_felder <- readOGR("WW-felder.shp")
+ww_felder <- spTransform(ww_felder,CRS(proj4string(stack20180520)))
+plotRGB(stack20180520,  r="Red", g="Green", b="Blue", stretch="lin")
+plot(ww_felder, col="yellow", add=TRUE)
+plot(ww2, col="red", add=TRUE)
+})
+
+```
+
+## Data Source
+Landsat 8 OLI/TIRS C1 Level-2 Products => NDVI/LAI
+ERA Interim => daily temperature
+
+
+## NDVI & LAI
+The change in vegetation growth could be observed by the change in NDVI (Normalized Difference Vegetation Index) and LAI (Leaf Area Index).
+
+## NDVI & LAI
+```{r ndvi, echo=TRUE}
+## NDVI function ##
+
+NDVI <- function(stack){
+  # get NIR & Red bands
+  nir <- stack[["NIR"]]
+  red <- stack[["Red"]]
+  # calculate NDVI
+  NDVI <- (nir-red) / (nir+red)
+  return(NDVI)
+}
+
+## LAI function ##
+
+LAI <- function(ndvi){0.57*exp(2.33*ndvi)}  # Saito et al (2001)
+
+```
+
+## NDVI & LAI
+
+
+```{r ndvi_pre}
+
+inputPanel(
+  selectInput("index", label = "Index:",
+              choices = c("NDVI", "LAI"), selected = "NDVI"),
+  
+  selectInput("year", label = "Year:",
+              choices = c(2017,2018), selected = 2017),
+  
+  sliderInput("month", label = "Month:",
+              min = 4, max = 8, value = 1, step = 1)
+)
+
+renderPlot({
+  if(input$year==2017){
+    a <- c("20170406","20170501","20170602","20170609","20170828")
+    date <- a[input$month-3]
+  }else{
+    a <- c("20180409","20180504","20180520","20180628","20180909")
+    date <- a[input$month-3]
+  }
+  
+  filename <- paste(input$index,date,".Tif",sep='')
+  library(raster)
+  setwd("D:/R/demmin")
+  index_plot <- raster(filename)
+  plot(index_plot)
+  
+})
+```
+
+
+
+## Extract Data from Sample Points
+
+```{r ndvi_sample}
+inputPanel(
+  selectInput("index2", label = "Index:",
+              choices = c("NDVI", "LAI","Temp_mean"), selected = "NDVI"),
+  
+  selectInput("year2", label = "Year:",
+              choices = c(2017,2018), selected = 2017)
+)
+
+
+renderPlot({
+library(ggplot2)  
+setwd("D:/R/demmin")
+filename <- paste("Data_ww",input$year2,".csv",sep="")
+Data_ww <- read.csv(filename)
+eval(parse(text=paste('ggplot(Data_ww,aes(x=date+3, y=',input$index2,', color=Pt))+geom_point()+stat_smooth()+ggtitle("',paste(input$index2,input$year2,sep=""),'")')))
+
+})
+```
+
+## Temperature
+```{r temp}
+inputPanel(
+  selectInput("year3", label = "Year:",
+              choices = c(2017,2018), selected = 2017)
+)
+
+
+renderPlot({
+library(ggplot2)  
+setwd("D:/R/demmin")
+filename <- paste("Data_Temp",input$year3,".csv",sep="")
+Data_temp<- read.csv(filename)
+
+ggplot(Data_temp,aes(x=date, y=Temp, col=month))+geom_point()+facet_wrap(~month)+stat_smooth()
+
+})
+```
+
+
+## Conclusion
+
+- steeper rise and decline in NDVI/LAI 2018   => shortened green period
+
+- early warm season and consistant hot days in 2018 => drough
+
+- heat wave in 2018 => worse vegetation growth
+
+

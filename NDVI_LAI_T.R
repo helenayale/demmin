@@ -558,6 +558,8 @@ for (i in 1:length(date_string)){
 }
 Data_ww2017
 
+write.csv(Data_ww2017, file="Data_ww2017.csv")
+
 # NDVI & LAI plots for separate points
 ggplot(Data_ww2017,aes(x=date, y=NDVI, color=Pt))+geom_point()+
   facet_wrap(~Pt)+stat_smooth()
@@ -605,6 +607,8 @@ for (i in 1:length(date_string)){
   }
 }
 Data_ww2018
+
+write.csv(Data_ww2018, file="Data_ww2018.csv")
 
 # NDVI & LAI plots for separate points
 ggplot(Data_ww2018,aes(x=date, y=NDVI, color=Pt))+geom_point()+
@@ -669,6 +673,8 @@ Data_Temp2017
 
 Data_Temp2017 <- na.omit(Data_Temp2017, invert=FALSE)
 
+write.csv(Data_Temp2017, file="Data_Temp2017.csv")
+
 ggplot(Data_Temp2017,aes(x=date, y=Temp, col=month))+geom_point()+facet_wrap(~month)+stat_smooth()
 
 
@@ -690,6 +696,7 @@ for (i in 1:length(date_string)){
 Data_Temp2018
 
 Data_Temp2018 <- na.omit(Data_Temp2018, invert=FALSE)
+write.csv(Data_Temp2018, file="Data_Temp2018.csv")
 
 ggplot(Data_Temp2018,aes(x=date, y=Temp, col=month))+geom_point()+facet_wrap(~month)+stat_smooth()
 
