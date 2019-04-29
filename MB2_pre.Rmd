@@ -49,7 +49,7 @@ plot(ww2, col="red", add=TRUE)
 
 ## Data Source
 - Landsat 8 OLI/TIRS C1 Level-2 Products (USGS) => NDVI/LAI
-- ERA Interim (ECMWF) => daily temperature
+- ERA Interim (ECMWF) => highest temperature 12-1pm, 2m above ground
 - Apr. - Aug. 2017 & 2018
 
 
