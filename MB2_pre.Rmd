@@ -25,7 +25,7 @@ agricultural fields in Alt Tellin, Demmin, Germany
 
 ```{r studyarea}
 renderPlot({
-setwd("D:/R/demmin")
+
 library(raster)
 library(rgdal) 
 ## reloading function
@@ -101,7 +101,7 @@ renderPlot({
   
   filename <- paste(input$index,date,".Tif",sep='')
   library(raster)
-  setwd("D:/R/demmin")
+
   index_plot <- raster(filename)
   plot(index_plot)
   
@@ -142,7 +142,7 @@ inputPanel(
 
 renderPlot({
 library(ggplot2)  
-setwd("D:/R/demmin")
+
 filename <- paste("Data_Temp",input$year3,".csv",sep="")
 Data_temp<- read.csv(filename)
 
